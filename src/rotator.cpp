@@ -144,7 +144,10 @@ rotatorCommand rotClass::computeCommand() {
 
             positionFiltered = computeAngle(groundPosition.lat, groundPosition.lon, groundPosition.alt, latFiltered, lonFiltered, altFiltered);
             positionRaw = computeAngle(groundPosition.lat, groundPosition.lon, groundPosition.alt, lastPosition.lat, lastPosition.lon, lastPosition.alt);
-
+            
+            commandOut.azm = positionRaw.azm;
+            commandOut.elv = positionRaw.elv;
+            
             commandOut.mode = TRACKING_MODE::TRACKING_SMOOTH;
             }
         break;

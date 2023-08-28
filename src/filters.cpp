@@ -1,13 +1,11 @@
 #include "filters.h"
 
-
 SecondOrderLowPassFilter::SecondOrderLowPassFilter(double cutoffFreq, double sampleRate) {
     this->cutoffFreq = cutoffFreq;
     this->sampleRate = sampleRate;
 
     yPrev = yPrev2 = xPrev = xPrev2 = 0.0;
 }
-
 
 double SecondOrderLowPassFilter::process(double input) {
     double omega = 2.0 * M_PI * cutoffFreq / sampleRate;
@@ -44,7 +42,6 @@ void SecondOrderLowPassFilter::setCutoffFreq(double cutoffFreq) {
     this->cutoffFreq = cutoffFreq;
 }
 
-
 SecondOrderEstimator::SecondOrderEstimator() {
     xPrev = xPrevTime = xPrev2 = xPrev2Time = sampleCount = 0.0;
     maxSpeed = 1;
@@ -67,7 +64,6 @@ double SecondOrderEstimator::computeAngle(unsigned long timeMillis) {
         return x;
     }
     else if (sampleCount > 3 and (timeMillis - xTime) < maxTimeWindow) {
-        //Serial.println("In the window");
         double xDot = getAngleFilter(xPrev,x) / ((xTime - xPrevTime) / 1000.0);
         xDot = constrain(xDot, -maxSpeed, maxSpeed);
         double xDotPrev = getAngleFilter(xPrev2,xPrev) / ((xPrevTime - xPrev2Time) / 1000.0);
@@ -76,7 +72,6 @@ double SecondOrderEstimator::computeAngle(unsigned long timeMillis) {
         return x+xDot*(timeMillis-xTime)/1000.0+0.5*xDotDot*pow((timeMillis-xTime)/1000.0,2);
     }
     else {
-        //Serial.println("Out of the window");
         double xDot = getAngleFilter(xPrev,x) / ((xTime - xPrevTime) / 1000.0);
         xDot = constrain(xDot, -maxSpeed, maxSpeed);
         double xDotPrev = getAngleFilter(xPrev2,xPrev) / ((xPrevTime - xPrev2Time) / 1000.0);
@@ -91,7 +86,6 @@ double SecondOrderEstimator::compute(unsigned long timeMillis) {
         return x;
     }
     else if (sampleCount > 3 and (timeMillis - xTime) < maxTimeWindow) {
-        //Serial.println("In the window");
         double xDot = x-xPrev / ((xTime - xPrevTime) / 1000.0);
         xDot = constrain(xDot, -maxSpeed, maxSpeed);
         double xDotPrev = xPrev-xPrev2 / ((xPrevTime - xPrev2Time) / 1000.0);
@@ -100,7 +94,6 @@ double SecondOrderEstimator::compute(unsigned long timeMillis) {
         return x+xDot*(timeMillis-xTime)/1000.0+0.5*xDotDot*pow((timeMillis-xTime)/1000.0,2);
     }
     else {
-        //Serial.println("Out of the window");
         double xDot = x-xPrev / ((xTime - xPrevTime) / 1000.0);
         xDot = constrain(xDot, -maxSpeed, maxSpeed);
         double xDotPrev = xPrev-xPrev2 / ((xPrevTime - xPrev2Time) / 1000.0);

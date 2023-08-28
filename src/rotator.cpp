@@ -1,7 +1,7 @@
 #include "rotator.h"
 
 rotClass::rotClass() 
-: latFilter(0.1, POSITION_ESTIMATION_RATE), lonFilter(0.1, POSITION_ESTIMATION_RATE), altFilter(0.5, POSITION_ESTIMATION_RATE)
+: latFilter(0.1, 10), lonFilter(0.1, 10), altFilter(0.5, 10)
 {
     mode = TARGET_MODE::TARGET_NONE;
     latEstimator.setMaxTimeWindow(10000);

@@ -67,6 +67,9 @@ class rotClass {
     SecondOrderLowPassFilter lonFilter;
     SecondOrderLowPassFilter altFilter;
 
+    void setNominalPositionRate(double rate);
+    void setNominalPointerRate(double rate);
+
   private:
     TARGET_MODE mode;
     pointer lastPointer;

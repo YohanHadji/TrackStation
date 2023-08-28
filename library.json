@@ -1,6 +1,6 @@
 {
     "name": "TrackStation",
-    "version": "0.0.2",
+    "version": "0.0.4",
     "description": "This generic library helps tracking object sending you their position",
     "keywords": "tracker, position, antenna, radio",
     "repository":

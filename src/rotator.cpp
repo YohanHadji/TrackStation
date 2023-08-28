@@ -173,6 +173,14 @@ unsigned rotClass::getPositionAge() {
     return millis()-lastPositionTimestamp;
 }
 
+void rotClass::setNominalPointerRate(double rate) {
+    nominalPointerRate = rate;
+}
+
+void rotClass::setNominalPositionRate(double rate) {
+    nominalPositionRate = rate;
+}
+
 double azimuthTo(double lat1, double lng1, double lat2, double lng2) {
   lat1 = lat1 * PI / 180.0;
   lng1 = lng1 * PI / 180.0;

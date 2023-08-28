@@ -79,4 +79,7 @@ class rotClass {
 
     long lastPositionTimestamp;
     long lastPointerTimestamp;
+
+    double nominalPositionRate;
+    double nominalPointerRate;
 };

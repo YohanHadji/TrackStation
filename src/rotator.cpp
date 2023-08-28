@@ -7,7 +7,8 @@ rotClass::rotClass()
     latEstimator.setMaxTimeWindow(10000);
     lonEstimator.setMaxTimeWindow(10000);
     altEstimator.setMaxTimeWindow(10000);
-
+    nominalPointerRate = 20;
+    nominalPositionRate = 1;
 };
 
 void rotClass::begin() {
@@ -27,17 +28,6 @@ void rotClass::begin() {
     lonEstimator.setMaxSpeed(dlngMaxSpeed);
     latEstimator.setMaxAccel(dlatMaxAccel);
     lonEstimator.setMaxAccel(dlngMaxAccel);
-
-    // delay(1000);
-
-    // UI_PORT.print("Max speed : ");
-    // UI_PORT.print(dlatMaxSpeed,10);
-    // UI_PORT.print(", ");
-    // UI_PORT.print(dlngMaxSpeed,10);
-    // UI_PORT.print(" Max accel : ");
-    // UI_PORT.print(dlatMaxAccel,10);
-    // UI_PORT.print(", ");
-    // UI_PORT.println(dlngMaxAccel,10);
 
     altEstimator.setMaxSpeed(100);
     altEstimator.setMaxAccel(10);
@@ -90,7 +80,7 @@ void rotClass::updatePointer(pointer pointerIn) {
 };
 
 bool rotClass::positionIsActive() {
-    if (millis() - lastPositionTimestamp > 2*(1000/NOMINAL_AV_RATE)) {
+    if (millis() - lastPositionTimestamp > 2*(1000/nominalPositionRate)) {
         latEstimator.reset();
         lonEstimator.reset();
         altEstimator.reset();
@@ -102,7 +92,7 @@ bool rotClass::positionIsActive() {
 }
 
 bool rotClass::pointerIsActive() {
-    if (millis() - lastPointerTimestamp > 2*(1000/NOMINAL_BINOC_RATE)) {
+    if (millis() - lastPointerTimestamp > 2*(1000/nominalPointerRate)) {
         return false;
     }
     else {
@@ -133,11 +123,11 @@ rotatorCommand rotClass::computeCommand() {
         break;
         case TARGET_POSITION:
             {
-            // WARNING -- ONLY FOR TESTING!!!
-            groundPosition.lat = 46.1457158;
-            groundPosition.lon = 6.1874207;
-            groundPosition.alt = 1379;
-            // WARNING -- ONLY FOR TESTING!!!
+            // // WARNING -- ONLY FOR TESTING!!!
+            // groundPosition.lat = 46.1457158;
+            // groundPosition.lon = 6.1874207;
+            // groundPosition.alt = 1379;
+            // // WARNING -- ONLY FOR TESTING!!!
 
             double latEstimation = latEstimator.computeAngle(millis());
             double lonEstimation = lonEstimator.compute(millis());
@@ -149,23 +139,11 @@ rotatorCommand rotClass::computeCommand() {
             double lonFiltered = lonFilter.process(lonEstimation);
             double altFiltered = altFilter.process(altEstimation);
 
-            // UI_PORT.print(av.gnss_lat*1000000);
-            // UI_PORT.print(", ");
-            // UI_PORT.print(latEstimation*1000000);
-            // UI_PORT.print(", ");
-            // UI_PORT.println(latFiltered*1000000);
-
             rotatorCommand positionRaw;
             rotatorCommand positionFiltered;
 
             positionFiltered = computeAngle(groundPosition.lat, groundPosition.lon, groundPosition.alt, latFiltered, lonFiltered, altFiltered);
             positionRaw = computeAngle(groundPosition.lat, groundPosition.lon, groundPosition.alt, lastPosition.lat, lastPosition.lon, lastPosition.alt);
- 
-            // UI_PORT.print(avFiltered.azm);
-            // UI_PORT.print(", ");
-            // UI_PORT.println(avRaw.azm);
-            // UI_PORT.print(", ");
-            // UI_PORT.println(avRaw.elv);
 
             commandOut.mode = TRACKING_MODE::TRACKING_SMOOTH;
             }
@@ -186,13 +164,6 @@ TARGET_MODE rotClass::computeMode() {
         return TARGET_MODE::TARGET_NONE;
     }
 }
-
-// void rotClass::calibrateTelemetry() {
-//    rotatorCommand avRaw;
-//     avRaw = computeAngle(lastPointer.position.lat, lastPointer.position.lon, lastPointer.position.alt, av.gnss_lat, av.gnss_lon, av.gnss_alt);
-//     tlmOffset.azm = avRaw.azm;
-//     tlmOffset.elv = avRaw.elv;
-// }
 
 position rotClass::getPosition() {
     return lastPosition;
